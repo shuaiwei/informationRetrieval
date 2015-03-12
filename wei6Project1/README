@@ -1,0 +1,21 @@
+Function: Three index files can be produced in each directory.
+		  Search interface for searching on palmetto.
+		  Uniword, Biword search can be made. 
+
+Operations:
+	In order to operate in another virtual machine, 4 things are need to be done:
+		1) All my directories, UniP1, BiP1, PosP1 and Search need to be put in a same parent directory, such as /home/wei6.
+
+		2) Create a "data" directory in the same parent directory, which put input Zip files; 
+
+		3) Modify the software installing path in "runHadoop.pbs" in all my 4 project directories;
+
+		4) Modify the configure path for hadoop and java in "run.bash" in all my 4 project directories to make us run Makefile directly and generate .jar file.
+
+	Steps:
+	1) Producing index files: (in current directory "output" named "part-r-0000")
+
+		Execute "./run.bash" in  directories UniP1, BiP1 and PosP1, then files will be compiled, .jar file and be produced and task will be submitted to palmetto.
+
+	2) Search
+		Execute "./search.bash", after compiling and run, a user-friendly interface will show up. Then we can input search type and corresponding term by the hint. At last, searching result from palmetto will be printed on terminal.

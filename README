@@ -1,0 +1,83 @@
+I create a user account hadoop, and relevant install files are put in dir /Users/hadoop
+Config hudoop in mac with java1.8
+Must add following environment var in ~/.bash_profile when using
+	http://hadoop.apache.org/docs/current/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html
+	export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_20.jdk/Contents/Home
+	export PATH=$JAVA_HOME/bin:$PATH
+	export HADOOP_CLASSPATH=$JAVA_HOME/lib/tools.jar
+Certainly, when using the binary code from hadoop example, no testing error!!!
+
+For test:
+
+/Users/hadoop/hadoop-2.6.0/bin/hdfs dfs -ls input/ 
+	sublime input/file01
+	sublime input/file02
+
+after adding some content, then we can test 
+
+/Users/hadoop/hadoop-2.6.0/bin/hdfs dfs -cat input/file01
+
+Ignore thee warning brought by using 32-bit hadoop.
+WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+
+"output" dir can not be created by myself.
+After alias hadoop, we can summerize all commands as following
+
+rm -rf output
+mc
+make
+jar cf wc.jar WordCount*.class 
+hadoop jar wc.jar WordCount intermediate_output output
+cat output/part-r-00000
+
+hadoop jar wc.jar WordCount com.sun.tools.javac.Main -libjars ${LIBJARS} ParsedFiles output
+!!!!!export HADOOP_CLASSPATH=$HADOOP_CLASSPATH:$snowStemmer "for hadoop "
+!!!export CLASSPATH=$CLASSPATH:$hadoop-core-classpath "for java"
+
+rm -rf output
+make clean
+make
+jar cf booleanRetrieval.jar *.java *.class
+cp booleanRetrieval.jar ~/parse
+hadoop jar booleanRetrieval.jar Driver
+cat output/part-r-00000
+
+rm -rf intermediate_output
+rm -rf output
+make clean
+make
+
+jar cf booleanRetrieval.jar *.java *.class
+hadoop jar booleanRetrieval.jar Driver
+cat output/part-r-00000
+
+
+
+
+CLASSPATH for snowball stemmer must be added in ~/.bash_profile.
+what I modified in 2nd project:
+add " " for parsing tag p;
+delete data dir and put data in each of the dir (local debug)
+add stopwords for query 
+modify stopwords.java for  removeStopWords funtion
+use a good Makefile
+
+in palmetto:
+export path must be put in ~/.bashrc
+scanner, while(!fs.exsit == true) can not be used.
+
+!!!!!!!!!!!
+the reason that we must use "term = term.toLowerCase();" is that 
+the index we have created hs used it;
+
+
+806791
+7459 = 0.8505068015390937
+7313 = 0.5580080780499282
+5673 = 0.4678704142353187
+6423 = 0.46451646121307516
+3507 = 0.4478419663659485
+7100 = 0.4197499229085781
+6109 = 0.41969429373559397
+3447 = 0.4117498347746309
+3592 = 0.35274850196958707
