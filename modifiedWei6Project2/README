@@ -1,0 +1,70 @@
+1. Preparing work: generate three index files.
+
+	1)	cd UniP1, then run ./run.bash to generate the first index file output/part-r-00000
+			key :	term, collectFrequency, docFrequency 
+			value : <docID,termFrequencyForTheTerm; docID,termFrequencyForTheTerm,......>
+
+	2)	cd DocP2, then run ./run.bash to use chain mapReduce to generate the second index 		file secondOutput/part-r-00000
+			key:		docID, moldOfTheDoc
+			value:		<term, termFrequency,term, termFrequency,......>
+
+	3)	cd contentRetrieval, then run ./run.bash to generate the third index file 
+		output/part-r-00000
+			key:		docID
+			value:		contentOfTheDoc
+
+2. Program running process 
+
+  1) Run 3 mapReduce jobs: 
+	a)	Run the first mapReduce job(Driver) to generate output file output/part-r-00000,
+		and its input file is "../UniP1/output/part-r-00000";
+			key:		docId
+			value: 		queryTerm, queryTermFrequency, moldOfTheQuery
+
+	b)	Run the second mapReduce job(Driver3) to generate output file moldOutput/part-r-00000, and its input file is "../DocP2/secondOutput/part-r-00000";
+			key:		docId
+			value: 		moldOfTheDoc
+
+	c) wait the the first job to end, then regard its output as the input of this map, run the third mapReduce job, to generate output file in queryIDFOutput/part-r-00000
+			key:		term
+			value:		docFrequency
+  2) Page rank
+	  --Four map
+	  	a) docTermMap 
+	  		key:		docID
+	  		value:		termFrequency; termFrequency; termFrequency......
+	  	b) docMoldMap
+	  		key:		docID
+	  		value:		moldOfDocVector
+	  	c) stoppedStemmedWordMap
+	  		key:		queryTerm
+	  		value:		TF
+	  	d) queryIDFMap
+	  		key:		queryTerm
+	  		value:		IDF	
+	  --Then compute tf-idf for each term of the query(others are 0) and compute Mold of 		query vector. 
+	  --Compute tf for each term of docs which have at least one term in the query.
+	  --compute inner product of the two vectors.
+	  --Do normalization by multiply 1/docMold * 1/queryMold in docMoldMap.
+	  --Put rank result of each corresponding doc into the map docScoreMap.
+	  --Write top 10 docIDs which has highest score(similarity) to file rankResult.txt
+
+  3) Run 4th mapReduce job to retrieval the content of top 10 docs.
+  	 input file: ../contentRetrieval/output/part-r-00000; 
+  	 output file: contentOutput/part-r-00000
+   		key: 		docId
+   		value:		contentOfTheDoc
+
+  So, we have two result files for each query:
+  	rankResult.txt and contentOutput/part-r-00000.
+
+3. Operating steps
+
+	1) In local node, cd tfIdf directory
+ 	2) run command qsub runHadoop upload all my files in ~/.
+ 	3) ssh to one node in palmetto , cd tfIdf directory
+	4) create "term" file to put what I want to search.
+	5) put the terms which I want to search into "term" file.
+	6) run ./nodeRun.bash 
+	7) Top 10 ranking result will be put in rankResult.txt in current dir.
+	8) The content of each result doc will be put in contentOutput/part-r-00000.
