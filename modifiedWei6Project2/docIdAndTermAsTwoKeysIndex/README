@@ -1,0 +1,12 @@
+chain MapReduce:
+	first map 	: input: zip files
+				  output:term,docId -> "1"
+	reducer	  	: term -> docId,tf
+
+	second map 	:  input = outFromFirst = output
+	reducer		:  docId 	-> term, tf, df
+				   term,df 	-> <docId,tf;docId,tf;......;>
+				   (just key term and df used, for computing queryMold)
+
+	third map   : input = outFromSecond = output
+	reducer		: docId,mold -> term, tf, df
