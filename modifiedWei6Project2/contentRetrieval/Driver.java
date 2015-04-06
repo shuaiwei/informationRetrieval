@@ -18,15 +18,6 @@ public class Driver{
 		job.setMapperClass(MyMapper.class);
 		job.setReducerClass(MyReducer.class);
 
-		// job.setMapperClass(MyBiMapper.class);
-		// job.setReducerClass(MyBiReducer.class);
-		// job.setCombinerClass(MyBiCombiner.class);
-
-
-		// job.setMapperClass(MyPosMapper.class);
-		// job.setReducerClass(MyPosReducer.class);
-		// job.setCombinerClass(MyPosCombiner.class);
-
 		job.setInputFormatClass(ZipFileInputFormat.class);
 		job.setOutputFormatClass(TextOutputFormat.class);
 		 

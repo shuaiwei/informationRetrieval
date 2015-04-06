@@ -71,5 +71,14 @@ public final class globalVariables
 
     public final static int numDocs = 5107;
 
+    public static HashMap<String, Double> rankResultMap;
+    //new is needed
+    static {
+
+        rankResultMap = new HashMap<String,Double>();
+    
+    }
+
+
 
 }

@@ -32,6 +32,10 @@ public class MyReducer3
 
       for (Text value : topDocsTreeMap.values()) {
           context.write(NullWritable.get(), value);
+
+          String[] docIdScore = value.toString().split("\\s+");
+          globalVariables.rankResultMap.put(docIdScore[0], Double.valueOf(docIdScore[1]));
+
       }
   }
 

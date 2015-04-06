@@ -56,6 +56,5 @@ import org.apache.hadoop.conf.Configuration;
 
       }
     }
-
   
   }
