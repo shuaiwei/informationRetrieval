@@ -19,6 +19,7 @@ import java.util.InputMismatchException;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.File;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,8 +34,12 @@ public class Driver extends Configured implements Tool {
 
 	private String FIRST_INPUT = "../docIdAndTermAsTwoKeysIndex/termIndexOutput/termAsKeyIndex-r-00000";
 	private String RELEVANT_DOC_OUTPUT = "./relevantDocOutput";
+
 	private String SECOND_INPUT = "../docIdAndTermAsTwoKeysIndex/docIndexOutput/part-r-00000";
-	private String SECOND_OUTPUT = "./output";
+	private String SECOND_OUTPUT = "./secondOutput";
+
+	private String THIRD_INPUT = "./secondOutput/part-r-00000";
+	private String THIRD_OUTPUT = "./output";
 
  	public static double moldQuery = 0.0;
 
@@ -91,7 +96,39 @@ public class Driver extends Configured implements Tool {
 		TextInputFormat.addInputPath(job2, new Path(SECOND_INPUT));
 		TextOutputFormat.setOutputPath(job2, new Path(SECOND_OUTPUT));
 
-		return job2.waitForCompletion(true) ? 0 : 1;
+		job2.waitForCompletion(true);
+
+		// Process p = Runtime.getRuntime().exec(new String[]{"bash","-c", "/Users/88wuji/Documents/hadoop-1.2.1/bin/hadoop fs -cat output/part-r-00000 | sort -n -k2 -r | head -n20"});
+	 //    p.waitFor();
+	 //    BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+	 
+	 //    String line = "";			
+	 //    while ((line = reader.readLine())!= null) {
+		// 	System.out.println(line);
+  //   	}
+  //       File f = new File("top20RankResult.txt");
+		// while(!f.exists()) { 
+		// 	System.out.println("You can't go that way!");
+		// }
+
+		// return ret ? 0 : 1;
+		Configuration conf3 = new Configuration();
+		Job job3 = new Job(conf3);
+		FileSystem fs3 = FileSystem.get(conf3);
+		fs3.delete( new Path(THIRD_INPUT + "/.*.crc"), true);
+		job3.setJobName("Hadoop job");
+
+		job3.setJarByClass(Driver.class);
+		job3.setMapperClass(MyMapper3.class);
+		job3.setReducerClass(MyReducer3.class);
+		 
+		job3.setOutputKeyClass(NullWritable.class);
+		job3.setOutputValueClass(Text.class);
+		 
+		TextInputFormat.addInputPath(job3, new Path(THIRD_INPUT));
+		TextOutputFormat.setOutputPath(job3, new Path(THIRD_OUTPUT));
+
+		return job3.waitForCompletion(true) ? 0:1;
 
 	}
 

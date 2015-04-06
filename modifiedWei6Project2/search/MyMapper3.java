@@ -16,21 +16,35 @@ import java.io.StringReader;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.io.LongWritable;
 
+import org.apache.hadoop.io.NullWritable;
+import java.util.TreeMap;
+
+
 public  class MyMapper3
-  extends Mapper<Object, Text, Text, Text> {
-  private Text keys = new Text();
-  private Text values = new Text();
-  public void map( Object key, Text value, Context context )
+  	extends Mapper<Object, Text, NullWritable, Text> {
+
+
+  	private TreeMap<Double, Text> topDocsTreeMap = new TreeMap<Double, Text>();
+
+  	public void map( Object key, Text value, Context context )
       throws IOException, InterruptedException {
-        
-        StringTokenizer itr = new StringTokenizer(value.toString());
-         while (itr.hasMoreTokens()) {
-          keys.set(itr.nextToken());
-          if(itr.hasMoreTokens()){
-            values.set(itr.nextToken());
-          }
-           context.write(keys, values);
-         }
+
+      	String[] docIdScore = value.toString().split("\\s+");
+      	//must have new here
+        topDocsTreeMap.put(Double.valueOf(docIdScore[1]), new Text(value)); 
+
+        if (topDocsTreeMap.size() > 10) {
+            topDocsTreeMap.remove(topDocsTreeMap.firstKey());
+        }  
+   	}
+
+   	protected void cleanup(Context context) 
+   			throws IOException, InterruptedException {
+
+        for ( Text value : topDocsTreeMap.values() ) {
+            context.write(NullWritable.get(), value);
+        }
 
     }
+
 }

@@ -58,8 +58,7 @@ import org.apache.hadoop.conf.Configuration;
           }
           double normLizedTfIdf = tfIdf / (moldQuery * Double.valueOf(docIdMold[1])) ; 
           key.set(docId);
-          value1.set( String.valueOf(normLizedTfIdf) + ","+ String.valueOf(moldQuery) 
-            +"," + String.valueOf(docIdMold[1]) + ",");
+          value1.set( String.valueOf(normLizedTfIdf));
           context.write(key, value1);
         }
       }
